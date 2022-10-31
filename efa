@@ -1,0 +1,6 @@
+library(psych)
+
+fa_sonuc <- fa(uydurulmus_data, nfactor=2, fm="pa")
+
+fa_sonuc
+fa_sonuc$scores
