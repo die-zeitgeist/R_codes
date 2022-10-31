@@ -6,7 +6,9 @@ cortest.bartlett(uydurulmus_data)
 scree(uydurulmus_data)
 
 
-fa_sonuc <- fa(uydurulmus_data, nfactor=2, fm="pa")
+fa_sonuc <- fa(rounded_data, nfactor=2, fm="pa", rotate = "none")
 
 fa_sonuc
 fa_sonuc$scores
+fa_sonuc$e.values #eigen values
+
