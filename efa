@@ -1,5 +1,11 @@
 library(psych)
 
+KMO(uydurulmus_data)
+cortest.bartlett(uydurulmus_data)
+
+scree(uydurulmus_data)
+
+
 fa_sonuc <- fa(uydurulmus_data, nfactor=2, fm="pa")
 
 fa_sonuc
