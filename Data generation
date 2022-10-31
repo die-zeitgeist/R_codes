@@ -7,3 +7,10 @@ uydurulmus_data <- rnorm_multi(n=1000,
             r = c(0.87, 0.09, 0.05, 0.05, 0.03, 0.95), #correlations with x1-x2, x1-x3, x1-x4, x2-x3, x2-x4, x3-x4 respectively
             varnames = c("x1", "x2", "x3", "x4"),
             empirical = FALSE) # emprirical true exact correlations. 
+            
+            
+            
+                   
+rounded_data <- round(uydurulmus_data, digits=0)
+
+cor(rounded_data)
