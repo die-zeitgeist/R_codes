@@ -1,0 +1,56 @@
+mfr.data <- matrix(c(1,1,5,5,3,5,3,
+                   1,2,9,7,5,8,5,
+                   1,3,3,3,3,7,1,
+                   1,4,7,3,1,3,3,
+                   1,5,9,7,7,8,5,
+                   1,6,3,5,3,5,1,
+                   1,7,7,7,5,5,5,
+                   2,1,6,5,4,6,3,
+                   2,2,8,7,5,7,2,
+                   2,3,4,5,3,6,6,
+                   2,4,5,6,4,5,5,
+                   2,5,2,4,3,2,3,
+                   2,6,4,4,6,4,2,
+                   2,7,3,3,5,5,4,
+                   3,1,5,5,5,7,3,
+                   3,2,7,7,5,7,5,
+                   3,3,3,5,5,5,5,
+                   3,4,5,3,3,3,1,
+                   3,5,9,7,7,7,7,
+                   3,6,3,3,3,5,3,
+                   3,7,7,7,7,5,7),ncol=7,byrow=TRUE)
+
+
+mfr.data <- as.data.frame(mfr.data)
+colnames(mfr.data) <- c("raters","subjects","p1","p2","p3","p4","p5")
+
+library(TAM)
+fit2 <- tam.mml.mfr(
+  resp=mfr2[ ,3:7], #responses
+  facets = mfr2["raters"], #later add persons, items default
+  pid = mfr2$subjects, #person id
+  formulaA = ~ item + step + raters, verbose = FALSE
+)
+summary(fit2)
+
+
+tahmin <- predict(fit2)
+tahmin
+tahmin$expected
+fit2$person
+fit2$xsi.facets
+
+options(max.print = 10000) 
+
+
+
+library(tidyverse)
+source("http://www.labape.com.br/rprimi/R/mfrm_construct_map.R")
+
+mfrm_construct_map(theta_subj = fit2$person$EAP, alfa_rater = fit2$xsi.facets$xsi[14:16], beta_task = fit2$xsi.facets$xsi[1:5],
+                   tresholds=fit2$xsi.facets$xsi[6:13]
+)
+
+fit2$person
+
+write_csv(mfr.data, file = "/Users/murat/Desktop/mfr.csv")
