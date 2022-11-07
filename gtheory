@@ -1,0 +1,8 @@
+install.packages("gtheory")
+library(gtheory)
+
+data(Brennan.3.2)
+    
+formula.Brennan.3.2 <- "Score ~ (1 | Person) + (1 | Task) + (1 | Rater:Task) + (1 | Person:Task)"
+    
+gstudy(data = Brennan.3.2, formula = formula.Brennan.3.2)
