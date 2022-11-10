@@ -1,0 +1,18 @@
+library(difR)
+
+dif__mh_sonuc <- difMH(madde_analizi_yanlilik[, 1:101], group = "cins", focal.name = 1)
+
+dif__mh_sonuc
+
+plot(dif__mh_sonuc)
+
+
+
+dif_reg_sonuc <- difGenLogistic(madde_analizi_yanlilik[1:101], group = "cins", focal.name = 1)
+
+dif_reg_sonuc
+
+
+plot(dif_reg_sonuc, item=1, itemFit = "best")
+
+plot(dif_reg_sonuc, plot= "itemCurve", item=1, itemFit = "best")
