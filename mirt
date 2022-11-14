@@ -5,7 +5,8 @@ cmodel2 <- 'F1 = 1,4,5
             
 cmod <- mirt(data, cmodel2,  itemtype = c('2PL', '2PL', '2PL', '2PL', '3PL'))
 
-coef(mod2)
+coef(mod2)     
+#divice d values minus a to obtain difficulty. d values are easyness.
 
 plot(pmod1, type = 'trace')
 plot(pmod1, type = 'itemscore')
