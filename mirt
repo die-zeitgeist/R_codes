@@ -8,6 +8,9 @@ cmod <- mirt(data, cmodel2,  itemtype = c('2PL', '2PL', '2PL', '2PL', '3PL'))
 coef(mod2)     
 #divice d values minus a to obtain difficulty. d values are easyness.
 
+coefs <- coef(cmod2, IRTpars = T)  #IRTpars=T gives exact b values. No need to divie minus a
+
+
 plot(pmod1, type = 'trace')
 plot(pmod1, type = 'itemscore')
 itemplot(pmod2, 1, rotate = 'oblimin')
