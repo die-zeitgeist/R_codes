@@ -1,32 +1,3 @@
-cmodel2 <- 'F1 = 1,4,5
-            F2 = 2,3
-            COV = F1*F2'
-            
-            
-cmod <- mirt(data, cmodel2,  itemtype = c('2PL', '2PL', '2PL', '2PL', '3PL'))
-
-coef(mod2)     
-#divice d values minus a to obtain difficulty. d values are easyness.
-
-coefs <- coef(cmod2, IRTpars = T)  #IRTpars=T gives exact b values. No need to divie minus a
-
-
-plot(pmod1, type = 'trace')
-plot(pmod1, type = 'itemscore')
-itemplot(pmod2, 1, rotate = 'oblimin')
-itemplot(cmod, 1, shiny=TRUE) 
-
-
-
-anova(mod1, mod2)
-
-
-scoresfull <- fscores(mod2)
-
-
-
-
-Second example (More reliable)
 library(mirt)
 
 model <- 'F1 = Item.1,Item.4,Item.5
@@ -41,11 +12,15 @@ coefs <- coef(irt_sonuc, IRTpars = T)
 
 coefs
 
-plot(irt_sonuc, type = 'trace', shiny=TRUE)
-itemplot(irt_sonuc, 1, shiny=TRUE)
+plot(irt_sonuc, type = 'trace')
+itemplot(irt_sonuc, 1) #shiny=TRUE
 
 
 fullscores <- fscores(irt_sonuc, method='EAP')
+
+M2(irt_sonuc)
+itemfit(irt_sonuc)
+person_fit <- personfit(irt_sonuc, method='MAP') #+-2
 
 
 
