@@ -24,3 +24,28 @@ anova(mod1, mod2)
 scoresfull <- fscores(mod2)
 
 
+
+
+Second example (More reliable)
+library(mirt)
+
+model <- 'F1 = Item.1,Item.4,Item.5
+          F2 = Item.2,Item.3
+          COV = F1*F2'
+
+irt_sonuc <- mirt(irt_data, model, itemtype = c('2PL', '2PL', '2PL', '2PL', '3PL'))
+
+
+coefs <- coef(irt_sonuc, IRTpars = T)
+
+
+coefs
+
+plot(irt_sonuc, type = 'trace', shiny=TRUE)
+itemplot(irt_sonuc, 1, shiny=TRUE)
+
+
+fullscores <- fscores(irt_sonuc, method='EAP')
+
+
+
