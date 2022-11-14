@@ -1,1 +1,5 @@
 denemeF1 <- rowSums(irt_data[,1:4])
+
+
+denemeF1 <- rowSums(irt_data[ c("Item.1","Item.4","Item.5")])
+
