@@ -1,8 +1,9 @@
 cmodel2 <- 'F1 = 1,4,5
-            F2 = 2,3'
+            F2 = 2,3
+            COV = F1*F2'
             
             
-cmod <- mirt(data, cmodel2)
+cmod <- mirt(data, cmodel2,  itemtype = c('2PL', '2PL', '2PL', '2PL', '3PL'))
 
 coef(mod2)
 
