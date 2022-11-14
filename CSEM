@@ -1,0 +1,22 @@
+Conditional SEM
+
+library(faux)
+csem_data <- rnorm_multi(n=1000,
+                               mu = c(0.5, 0.5, 0.5, 0.5),
+                               sd = c(0.16, 0.16, 0.16, 0.16),
+                               r = c(0.50, 0.50, 0.50, 0.50, 0.50, 0.50), 
+                               varnames = c("m1", "m2", "m3", "m4"),
+                               empirical = FALSE) # emprirical true exact correlations. 
+
+csem_data <- round(csem_data)
+
+cor(csem_data)library(CTT)
+
+rapor <- itemAnalysis(csem_data[1:4])
+
+csem_data$toplam <- rowSums(csem_data[ , 1:4])
+
+CSEM1 <- sqrt((csem_data$toplam*(4-csem_data$toplam))/(4-1))
+
+CSEM1 <- as.data.frame(CSEM1)
+View(CSEM1)
