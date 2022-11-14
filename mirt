@@ -1,0 +1,19 @@
+cmodel2 <- 'F1 = 1,4,5
+            F2 = 2,3'
+            
+            
+cmod <- mirt(data, cmodel2)
+
+coef(mod2)
+
+plot(pmod1, type = 'trace')
+plot(pmod1, type = 'itemscore')
+itemplot(pmod2, 1, rotate = 'oblimin')
+
+
+anova(mod1, mod2)
+
+
+scoresfull <- fscores(mod2)
+
+
