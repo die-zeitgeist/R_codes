@@ -11,6 +11,8 @@ coef(mod2)
 plot(pmod1, type = 'trace')
 plot(pmod1, type = 'itemscore')
 itemplot(pmod2, 1, rotate = 'oblimin')
+itemplot(cmod, 1, shiny=TRUE) 
+
 
 
 anova(mod1, mod2)
