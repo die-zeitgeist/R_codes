@@ -23,4 +23,20 @@ itemfit(irt_sonuc)
 person_fit <- personfit(irt_sonuc, method='MAP') #+-2
 
 
+#item information
+extr.1 <- extract.item(irt_sonuc,1)
+Theta <- matrix(seq(-4,4, by = .1))
+info.1 <- iteminfo(extr.1, Theta)
+#do something with the info?
+plot(Theta, info.1, type = 'l', main = 'Item information')
 
+
+#multidimensional item information
+mod <- mirt(irt_sonuc, 2, TOL=1e-2)
+ii <- extract.item(irt_sonuc, 1)
+Theta <- as.matrix(expand.grid(-4:4, -4:4))
+iteminfo(ii, Theta, degrees=c(45,45)) # equal angle
+iteminfo(ii, Theta, degrees=c(90,0)) # first dimension only
+# information matrices
+iteminfo(ii, Theta, multidim_matrix = TRUE)
+iteminfo(ii, Theta[1, , drop=FALSE], multidim_matrix = TRUE)
