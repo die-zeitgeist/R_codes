@@ -1,0 +1,40 @@
+library(naniar)
+anomat_analiz_datasi <- anomat %>% replace_with_na_all(condition = ~.x == 999)
+
+
+library(lavaan)
+
+
+
+anomat_cfa <- 'factor1 =~ A1.1.a + A1.1.b + A1.2.a + A1.2.b
+factor2 =~ A2.a + A2.b + A2.c
+factor3 =~ A3.1.a + A3.2.a + A3.2.b
+factor4 =~ A4.1.a_1 + A4.1.a_7 + A4.1.a_5 + A4.1.a_6 + A4.1.a_2 + A4.1.a_4 + A4.1.a_3 + A4.1.a_9 + A4.1.a_8 + A4.1.a_0 + A4.2.a + A4.3.a + A4.3.b
+factor5 =~ A5.a + A5.b + A5.c + A5.c_c
+factor6 =~ A6.1.a + A6.1.b + A6.2.a + A6.3.a + A6.3.b
+factor7 =~ A7.1.a_17 + A7.1.a_42 + A7.1.a_61 + A7.2.a
+factor8 =~ A8.1.a_173 + A8.1.a_191 + A8.1.a_148
+factor9 =~ A9.a_3 + A9.a_8 + A9.a_12 + A9.a_17
+factor10 =~ B1.a + B1.b + B1.c + B1.c_c + B1.d + B1.e + B1.f + B1.g + B1.g_g + B1.h + B1.i_i + B1.i + B1.j + B1.k + B1.l + B1.m + B1.n + B1.o
+factor11 =~ B2.a + B2.b + B2.c + B2.c_c + B2.d + B2.e + B2.f + B2.g + B2.g_g + B2.h + B2.i_i + B2.i + B2.j + B2.k + B2.l + B2.m + B2.n + B2.o
+factor12 =~ B3.a + B3.b + B3.c
+factor13 =~ B4.a + B4.b + B4.c
+factor14 =~ C1.a + C1.b
+factor15 =~ C2.a + C2.b
+factor16 =~ C3.a + C3.b + C10.a
+factor17 =~ C4.a + C4.b + C4.c + C4.c_c
+factor18 =~ C5.a + C5.b + C5.c + C5.c_c
+factor19 =~ C6.a + C6.b + C8.a
+factor20 =~ C7.a + C7.b + C.7.c + C.7.c_c + C.7.d + C.7.e
+factor21 =~ C9.a + C9.b + C9.c + C9.c_c
+factor22 =~ D1.a + D1.b + D1.c + D1.c_c + D1.d + D1.e + D1.f + D1.g
+factor23 =~ D2.a + D2.b + D2.c + D2.ç + D2.d + D2.e + D2.f
+factor24 =~ D3.a + D3.b + D3.c + D3.c_c + D3.d
+factor25 =~ D4.a_yamuk + D4.a_ucgen + D4.a_dikdortgen + D4.a_kare
+factor26 =~ D5.a + D5.b + D5.c + D5.c_c + D5.d + D5.e + D5.f + D5.g + D5.g_g
+factor27 =~ D6.a + D6.b + D6.c + D6.c_c
+factor28 =~ D7.a + D7.b + D7.c + D7.c_c' 
+
+anomat_cfa_sonuc <- cfa(anomat_cfa, anomat_analiz_datasi, ordered = TRUE)
+
+summary(anomat_cfa_sonuc, fit.measures=TRUE)
