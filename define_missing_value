@@ -1,0 +1,2 @@
+library(naniar)
+data2 <- data1 %>% replace_with_na_all(condition = ~.x == 999)
