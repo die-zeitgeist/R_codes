@@ -1,0 +1,2 @@
+mysample <- mydata[sample(1:nrow(mydata), 50,
+   replace=FALSE),]
