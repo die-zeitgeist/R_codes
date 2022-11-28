@@ -1,0 +1,82 @@
+write.csv(rounded_data, "/Users/murat/Downloads/rounded.csv", row.names = TRUE)
+
+model <- 'F1 = m1,m2
+          F2 = m3,m4'
+
+library(mirt)
+
+
+
+
+# Partial credit model (Kısmi Puan)
+grades_sonuc <- mirt(rounded_data, model, itemtype = "Rasch")
+#Bu model Rasch ile birebir aynıdır. Bu modelde sadece threshold değerleri kestirilir. 
+#a değerleri tüm maddeler için 1 olarak sabittir. Bu modelde her madde kısmi puanlanabilir. 
+#Bu kısmi puanlamadan kasıt şudur. Maddeyi tam yanıtlamak için bir kaç adım vardır
+#Bireyler bu adımlardan bazılarını yapabilir ve buna göre puan alırlar.
+#Örneğin matematik sorularında bazı adımları bilebilir ama hepsini bilemeyebilir. Likert'e mantıken uygun değildir
+#Çünkü giderek daha doğru hale gelen bir durum yoktur. İlginç ki bu modelin puan kategorileri için
+#bir öncelik sonralık sıralaması varsayımı yoktur. Yani puanlar büyüdükçe daha iyi oluyor gibi bir
+#beklenti ile bu analizi yapmaz. 
+
+coef(grades_sonuc, simplify=TRUE)
+
+
+
+#Generalized Partial Credit Model (Genelleştirilmiş Kısmı puan)
+grades_sonuc <- mirt(rounded_data, itemtype = "gpcm")
+#Bu model Partial Credit modelin a parametresinin değişebildiği halidir. 
+#Bu model de yine her puan kategorisinin bir öndekinden daha iyi olduğunu yani bir adım daha
+#iyi olduğunu gerektirir. Yani puanlar adımlı olmak zorundadır. Giderek daha doğru hale gelmelidir. 
+
+
+#Graded response: (Aşamalı Tepki)
+grades_sonuc <- mirt(rounded_data, itemtype = "graded")
+#Ordered puanlamada kullanılır. Sıra önemli, puanlar belirli bir sıra ile verilir, Likert buna iyi örnektir. )
+# Örneğin, 0-1-2-3-4 şeklindeki puanlar veya likert tipi maddeler. Giderek artan bir sıra vardır. Daha doğru olma değil
+#Bir üsttedaki iyi bir durumda tepki verme gibi düşünülebilir. Toplanabilir olmayan sıralı veriler için uygundur.
+#Likert, Harf notları gibi. 
+#Graded response model 2PL Modelin polythomous hali gibi düşünülebilir. coef komutu threshold'ları verecektir. 
+#Bu threshold değerleri %50 ihtimalle o thetadaki bireylerin o kategoriyi seçme ihtimalleridir. Bu model
+#her maddenin farklı kategori sayısına sahip olduğu durumda daha iyidir. 
+
+
+
+#Rating Scale Model
+grades_sonuc <- mirt(rounded_data, itemtype = "rsm")
+#Bu model graded response ile benzer bir modeldir fakat bu model maddelerin hepsinin aynı sayıda kategoriye
+#sahip olmasını bekler. Bazı maddeler 5'li bazıları 7'li ise bu model uygun olmayacaktır. Bu model tü maddelerin aynı
+#thresholdlara sahip olduğu bir sonuç verir. Aynı zamanda tüm maddelerin a değerleri de 1'dir. c parametresi türetir
+#Bu c parametresi maddenin lokasyon (zorluk) parametresidir. Bu model Rasch gibi düşünülebileceği için. 
+
+
+
+
+#Nominal Response Model (Sınıflamalı tepki model)
+grades_sonuc <- mirt(rounded_data, itemtype = "nominal")
+#Bu modelde puan kategorileri bağımsızdır. 3,2'den daha yüksek olmak zorunda değildir. 
+#tamamen kategorik puanlamalar için kullanılabilir. Buna örnek olarak çoktan seçmeli soruların
+#A,B,C,D,E seçenekleri verilebilir. Her ne kadar birisi tek doğru olsa da hangi yetenekteki birey hangi seçeneği
+#seçiyor gibi bir araştırma bu modelle yapılabilir. 
+
+
+
+
+grades_sonuc
+
+
+coef(grades_sonuc, IRTpars=TRUE, simplify=TRUE)
+
+plot(grades_sonuc, type = 'trace')
+
+plot(grades_sonuc, type = 'infotrace')
+
+
+
+
+
+fullscores <- fscores(grades_sonuc, method='EAP')
+itemfit(grades_sonuc)
+
+
+
