@@ -1,0 +1,5 @@
+farklı satır numaralarına sahip aynı değişkenleri içeren verileri birleştirme:
+
+library(dplyr)
+
+birlesmis_tweetler <- bind_rows(instancesfile1,instancesfile2)
