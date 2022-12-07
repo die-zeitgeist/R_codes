@@ -1,0 +1,108 @@
+#python'da twitter verisi cekme
+#pip install git+https://github.com/JustAnotherArchivist/snscrape.git
+#snscrape --jsonl --progress --max-results 5000 twitter-search "vize kopya since:2020-09-01 until:2021-06-30" > text-query-tweets.json
+#snscrape --jsonl --max-results 10 instagram-hashtag oreo > insta-oreo.json
+#snscrape --jsonl --max-results 10 telegram-channel SonDakika > telegram-sondakika.json 
+
+
+
+options(scipen = 999)
+install.packages(c("tidyverse", "jsonlite","tidytext","data.table","dplyr","ggplot2"))
+
+
+options(scipen = 999)
+library(tidyverse)
+library(jsonlite)
+library(tidytext)
+library(data.table)
+library(dplyr)
+library(ggplot2)
+
+#json dosyalarini r data frame dosyasi haline donusturmek
+instancesfile1 <- stream_in(file("/Users/murat/text-query-tweets.json"))
+
+
+#EXTRACT EDILMIS DATA FRAME ICINDEN TWEET'LERI CEKMEK
+#sonradan eslenebileek sekilde id iceren tweetler
+myvars <- c("id", "rawContent")
+sadece_tweetler <- instancesfile1[myvars]
+
+#sentimental analiz
+
+lexicon <- read.table("/Users/murat//custom_lexicon_ortak.csv",
+                      header = TRUE,
+                      sep = ';',
+                      encoding = "UTF-8", 
+                      stringsAsFactors = FALSE)
+
+lexicon2 <- lexicon %>% 
+  select(c("WORD","TONE")) %>% 
+  rename('word'="WORD",'value'="TONE")
+
+
+
+#kelimeleri puanlamak
+sadece_tweetler %>%
+  mutate(linenumber = row_number()) %>% #line number for later sentence grouping 
+  unnest_tokens(word, `rawContent`) %>% #tokenization - sentence to words
+  inner_join(lexicon2) %>% # inner join with our lexicon to get the polarity score
+  group_by(linenumber) %>% #group by for sentence polarity
+  summarise(sentiment = sum(value)) %>% # final sentence polarity from words
+  left_join(
+    sadece_tweetler %>%
+      mutate(linenumber = row_number()) #get the actual text next to the sentiment value
+  ) %>% write.csv("sentiment_output.csv",row.names = FALSE)
+
+mean(lexicon2$value)
+
+sentiment_output <- read.csv("/Users/murat/sentiment_output.csv")
+
+
+
+summary(sentiment_output$sentiment)
+
+count(sentiment_output, vars=sentiment)
+
+#buradan sonrasi bitmis sentiment ile tum tweet datasini birlesirerek butun bir data elde etmek
+sentiment_ve_tweetler <- merge(instancesfile1, sentiment_output, by="id", all=TRUE)
+
+
+#grafik uretme
+sentiment_ve_tweetler$date <- as.Date(sentiment_ve_tweetler$date)
+ggplot(sentiment_ve_tweetler, aes(x = date, y = sentiment)) +
+  geom_point() +
+  geom_smooth(method = "auto") +
+  scale_x_date(date_breaks = "2 month", date_labels = "%m %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
+
+#en cok kim tweet atmis
+count(sentiment_ve_tweetler, vars=sentiment_ve_tweetler$user$username, sort=TRUE)
+
+
+#kullanıcıların yaratılma tarihlerine göre ne tür tweet attıkları
+sentiment_ve_tweetler$date <- as.Date(sentiment_ve_tweetler$date)
+sentiment_ve_tweetler$user$created <- as.Date(sentiment_ve_tweetler$user$created)
+ggplot(sentiment_ve_tweetler, aes(x = user$created, y = sentiment)) +
+  geom_point() +
+  geom_smooth(method = "auto") +
+  scale_x_date(date_breaks = "2 year", date_labels = "%m %Y")+
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
+
+#kullanici adi, takipci sayisi ve retweet sayisi
+count(sentiment_ve_tweetler, sentiment_ve_tweetler$user$username, sentiment_ve_tweetler$user$followersCount, sentiment_ve_tweetler$retweetCount, sort = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
