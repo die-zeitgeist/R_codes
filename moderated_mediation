@@ -1,3 +1,38 @@
+library(JSmediation)
+
+library(dplyr)
+mod_mediation2 <-
+  mod_mediation2 %>%
+  standardize_variable(c(okulda_caba, yayin_sayisi_med), suffix = "c") %>%
+  dplyr::mutate(group_c = build_contrast(tanidik_group,
+                                             "1",
+                                             "2")
+  )
+
+
+moderated_mediation_fit <- 
+  mdt_moderated(data = mod_mediation2,
+                IV   = okulda_caba_c,
+                DV   = is_teklifi, 
+                M    = yayin_sayisi_med_c,
+                Mod  = group_c)
+
+
+moderated_mediation_fit
+
+
+
+moderated_mediation_fit_w_index <- moderated_mediation_fit %>%
+  add_index(stage = "first")
+
+
+moderated_mediation_fit_w_index
+
+
+
+
+LAVAAN ile
+
 library(lavaan)
 
 write.csv(mod_mediation2, file = "/Users/murat/Downloads/mod_mediation2.csv", row.names = FALSE)
