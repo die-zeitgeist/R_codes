@@ -1,0 +1,53 @@
+library(lavaan)
+
+write.csv(mod_mediation2, file = "/Users/murat/Downloads/mod_mediation2.csv", row.names = FALSE)
+
+
+
+mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod < 5 ] <- "1"
+mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod > 5 ] <- "2"
+mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod == 5 ] <- "1"
+
+
+
+
+
+mean(mod_mediation2$tanidik_sayisi_mod)
+
+mod_med <- 'yayin_sayisi_med ~ c(ag1,ag2)*okulda_caba
+                  is_teklifi ~ c(bg1,bg2)*yayin_sayisi_med
+                  is_teklifi ~ c(cg1, cg2)*okulda_caba
+
+                  abg1:= ag1*bg1 #group 1
+                  abg2:= ag2*bg2 #group 2
+                  totalg1 := cg1 + (ag1*bg1)
+                  totalg2 := cg2 + (ag2*bg2)
+
+                  #Sobel Testi
+                  dogrudan_etki_farki := cg1-cg2
+                  dolayli_etki_farki := abg1-abg2
+                  toplam_etki_farki := totalg1-totalg2'
+
+
+mod.med_sonuc <- sem(mod_med, data = mod_mediation2, group="tanidik_group", se="boot", bootstrap=500, meanstructure = TRUE)
+
+
+summary(mod.med_sonuc, fit.measures=T, standardized=T, ci=TRUE, rsquare=TRUE)
+
+
+lavTestWald(mod.med_sonuc, constraints = "ag1==ag2")
+
+lavTestWald(mod.med_sonuc, constraints = "bg1==bg2")
+
+lavTestWald(mod.med_sonuc, constraints = "cg1==cg2")
+
+lavTestWald(mod.med_sonuc, constraints = "abg1==abg2") 
+
+
+library(semPlot)
+layout(t(1:2))
+semPaths(mod.med_sonuc, "eq", ask = FALSE, as.expression = "edges", mar = c(3, 1, 5, 1))
+
+
+
+
