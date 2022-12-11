@@ -1,0 +1,9 @@
+library(dplyr)
+
+recode(data, `2` = "b", `4` = "d", .missing = "missing")
+
+Conditional RECODE
+
+mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod < 5 ] <- "1"
+mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod > 5 ] <- "2"
+mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod == 5 ] <- "1"
