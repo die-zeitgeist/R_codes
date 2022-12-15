@@ -1,0 +1,28 @@
+library(lavaan)
+
+hatali_model <- ' performans =~ perf1+perf2+perf3
+            normlar =~ no4+no5+no6
+            performans+normlar ~ adanmislik+tutum+yatirim+havaalani_yolcu_sayisi+havaalani_gelis_ind'
+
+hatali_sonuc <- sem(hatali_model, multilevel_latent)
+
+summary(hatali_sonuc, fit.measures=TRUE)
+
+
+
+model <- '
+        level: 1
+            performans =~ perf1+perf2+perf3
+            normlar =~ no4+no5+no6
+            performans+normlar ~ adanmislik+tutum+yatirim
+        level: 2
+            performans =~ perf1+perf2+perf3
+            normlar =~ no4+no5+no6
+            performans+normlar ~ havaalani_yolcu_sayisi+havaalani_gelis_ind'
+
+
+fit <- sem(model = model, data = multilevel_latent, cluster = "cluster")
+
+lavInspect(fit, "icc")
+
+summary(fit, fit.measures=TRUE)     
