@@ -1,5 +1,13 @@
 ABCD datasını 1-0 veriye dönüştürme
 
+library(mirt)
+
+key2binary(CTTdata, CTTkey, score_missing = FALSE)
+
+
+
+
+numeric datayı 1-0 kodlamak
 library(psych)
 data(iqitems)
 iq.keys <- c(4,4,4, 6,6,3,4,4,  5,2,2,4,  3,2,6,7)
