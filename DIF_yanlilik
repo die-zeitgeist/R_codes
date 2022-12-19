@@ -1,18 +1,27 @@
 library(difR)
-
 dif_mh_sonuc <- difMH(madde_analizi_yanlilik[, 1:101], group = "cins", focal.name = 1)
-
 dif_mh_sonuc
-
 plot(dif_mh_sonuc)
 
 
 
 dif_reg_sonuc <- difGenLogistic(madde_analizi_yanlilik[1:101], group = "cins", focal.name = 1)
-
 dif_reg_sonuc
-
-
 plot(dif_reg_sonuc, item=1, itemFit = "best")
-
 plot(dif_reg_sonuc, plot= "itemCurve", item=1, itemFit = "best")
+
+
+
+
+
+library(mirt)
+
+madde_analizi_yanlilik$cins_t <- ifelse(madde_analizi_yanlilik$cins==1, "K", "E")
+ 
+irt_dif_sonuc <-  multipleGroup(madde_analizi_yanlilik[2:11], model = 1, itemtype = "3PL",
+              group = madde_analizi_yanlilik$cins_t, 
+              invariance = c("m1", "m2", "m3", "free_means", "free_vars"))
+
+dif_nihai_sonuc <- DIF(irt_dif_sonuc, c("a1", "d"), plotdif = TRUE)
+
+dif_nihai_sonuc
