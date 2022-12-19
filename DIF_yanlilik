@@ -22,6 +22,9 @@ irt_dif_sonuc <-  multipleGroup(madde_analizi_yanlilik[2:11], model = 1, itemtyp
               group = madde_analizi_yanlilik$cins_t, 
               invariance = c("m1", "m2", "m3", "free_means", "free_vars"))
 
-dif_nihai_sonuc <- DIF(irt_dif_sonuc, c("a1", "d"), plotdif = TRUE)
+dif_nihai_sonuc <- DIF(irt_dif_sonuc, c("a1", "d", "g"), plotdif = TRUE)
+
+dif_nihai_sonuc <- DIF(irt_dif_sonuc, c("g"), plotdif = TRUE) #hangisinden kaynaklaniyor
+
 
 dif_nihai_sonuc
