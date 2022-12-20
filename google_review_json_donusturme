@@ -1,0 +1,24 @@
+#Google api ile review indirdikten sonra
+
+
+library(jsonlite)
+library(rjson)
+
+
+safe_fromJSON <- function(txt, encoding = "UTF-8") {
+  
+  obj_lines <- readLines(con = txt, encoding = encoding)
+  
+  check_json <- jsonlite::validate(txt = obj_lines)
+  if(check_json == TRUE ) {
+    obj_json <- fromJSON(txt = obj_lines)
+  } else {
+    obj_json <- fromJSON(txt = "[]") # "[]" represents an empty json.
+  }
+  
+  obj_json
+}
+
+sonuc <- safe_fromJSON(txt = "/Users/murat/Downloads/google.json")
+
+sonuc2 <-as.data.frame(sonuc) 
