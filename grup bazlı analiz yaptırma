@@ -1,0 +1,5 @@
+library(dplyr)
+f1_na_9_alti_veriler %>%
+  group_by(Cinsiyetiniz) %>%
+  summarise(statistic = shapiro.test(f1)$statistic,
+            p.value = shapiro.test(f1)$p.value)
