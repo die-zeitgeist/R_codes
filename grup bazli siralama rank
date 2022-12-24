@@ -1,0 +1,3 @@
+ranked_by_f1 <- f1_na_9_alti_veriler %>% arrange(Cinsiyetiniz ,f1) %>%
+  group_by(Cinsiyetiniz) %>%
+  mutate(rank = rank(f1))
