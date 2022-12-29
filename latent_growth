@@ -1,0 +1,69 @@
+# Latent Growth
+
+library(lavaan)
+# first model only intercept no others
+
+model1 <- 'i =~ 1*time1+1*time2+1*time3+1*time4
+           i ~~ 0*i
+           time1~~a*time1
+           time2~~a*time2
+           time3~~a*time3
+           time4~~a*time4'
+
+model1_sonuc <- growth(model1, two_factor_lg)
+
+summary(model1_sonuc, fit.measures=TRUE)
+
+
+# second model only intercept and intercept variance no others
+
+model2 <- 'i =~ 1*time1+1*time2+1*time3+1*time4
+           time1~~a*time1
+           time2~~a*time2
+           time3~~a*time3
+           time4~~a*time4'
+
+model2_sonuc <- growth(model2, two_factor_lg)
+
+summary(model2_sonuc, fit.measures=TRUE)
+
+# third model intercept, intercept variance and random slope (slope of 0) no others
+
+model3 <- 'i =~ 1*time1+1*time2+1*time3+1*time4
+           s =~ 0*time1+1*time2+2*time3+3*time4
+           s ~ 0*1
+           s~~0*i
+           time1~~a*time1
+           time2~~a*time2
+           time3~~a*time3
+           time4~~a*time4'
+
+model3_sonuc <- growth(model3, two_factor_lg)
+
+summary(model3_sonuc, fit.measures=TRUE)
+
+# fourth model intercept, intercept variance and slope variances fixed
+
+model4 <- 'i =~ 1*time1+1*time2+1*time3+1*time4
+           s =~ 0*time1+1*time2+2*time3+3*time4
+         
+           time1~~a*time1
+           time2~~a*time2
+           time3~~a*time3
+           time4~~a*time4'
+
+model4_sonuc <- growth(model4, two_factor_lg)
+
+summary(model4_sonuc, fit.measures=TRUE)
+
+# fifth model intercept, intercept variance, slope and variances
+
+model5 <- 'i =~ 1*time1+1*time2+1*time3+1*time4
+           s =~ 0*time1+1*time2+2*time3+3*time4'
+
+model5_sonuc <- growth(model5, two_factor_lg)
+
+summary(model5_sonuc, fit.measures=TRUE)
+
+
+
