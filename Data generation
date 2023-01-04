@@ -14,3 +14,8 @@ uydurulmus_data <- rnorm_multi(n=1000,
 rounded_data <- round(uydurulmus_data, digits=0)
 
 cor(rounded_data)
+
+Categorical data genaration
+
+final_odev_data$group <- sample(x=c("dusuk","orta", "yuksek"), 
+            size=1000, replace=TRUE, prob=rep(1/3, 3))
