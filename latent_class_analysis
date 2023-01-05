@@ -1,0 +1,11 @@
+library(poLCA)
+
+
+lca_sonuc <- poLCA(cbind(yemek, koltuk, eglence, bolge, lounge)~1, data=lca_data, 
+              nclass=3, maxiter = 10000, nrep = 3)
+              
+              
+              
+lca_data$grup <- lca_sonuc$predclass
+
+lca_data$probabilities <- lca_sonuc$posterior
