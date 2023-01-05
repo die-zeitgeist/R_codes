@@ -1,0 +1,2 @@
+library(dplyr)
+lca_data <- rename(lca_data, yeni = eski)
