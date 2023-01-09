@@ -10,3 +10,13 @@ Conditional RECODE
 mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod < 5 ] <- "1"
 mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod > 5 ] <- "2"
 mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod == 5 ] <- "1"
+
+
+Loop recode
+
+library(dplyr)
+library(magrittr)
+
+data %<>% 
+  mutate_at(c(1:59)    , recode, '1'='0', '2'='1', '3'='2', '4'='3') %>%
+  mutate_at(c(65,73,99), recode, '1'='0', '2'='0', '3'='0', '4'='1')
