@@ -1,6 +1,9 @@
 library(dplyr)
 
-recode(data, `2` = "b", `4` = "d", .missing = "missing")
+recode(data$m1, `2` = "b", `4` = "d", .missing = "missing")
+
+recode(data$m1, `2` = 1, `4` = 2, .missing = 999) $dplyr sadece tek kolona yapabilir recode
+
 
 Conditional RECODE
 
