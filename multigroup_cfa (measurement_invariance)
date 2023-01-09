@@ -20,7 +20,7 @@ sonuc_metric <- cfa(model, univ_data, ordered = TRUE, group = "Cinsiyet", group.
 sonuc_configural <- cfa(model, univ_data, ordered = TRUE, group = "Cinsiyet")
 
 
-
+cfa(control=list(iter.max=100)) #iterasyon sayısını arttırmak
 
 summary(sonuc_strict, fit.measures=TRUE)
 summary(sonuc_configural, fit.measures=TRUE)
