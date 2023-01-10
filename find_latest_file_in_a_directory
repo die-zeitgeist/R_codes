@@ -1,0 +1,3 @@
+files <- list.files(path="/Users/user",pattern="*person.rds",full.names = TRUE,recursive = FALSE)
+latest <- files[which.max(file.mtime(files))]
+rds_okunan <- readRDS(file = latest,"rds")
