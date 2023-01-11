@@ -1,0 +1,13 @@
+yeni_data <- read.table(text=
+              "m1 m2 m3
+              1 1 1 
+               1 1 1 
+               1 1 0 
+               1 1 0 
+               1 1 0 
+               1 0 0 
+               1 0 0 
+               1 0 0 
+               0 0 0 
+               0 0 0",
+header=TRUE)
