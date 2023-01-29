@@ -15,7 +15,7 @@ grades_sonuc <- mirt(rounded_data, model, itemtype = "Rasch")
 #Bu kısmi puanlamadan kasıt şudur. Maddeyi tam yanıtlamak için bir kaç adım vardır
 #Bireyler bu adımlardan bazılarını yapabilir ve buna göre puan alırlar.
 #Örneğin matematik sorularında bazı adımları bilebilir ama hepsini bilemeyebilir. Likert'e mantıken uygun değildir
-#Çünkü giderek daha doğru hale gelen bir durum yoktur. İlginç ki bu modelin puan kategorileri için
+#Çünkü likertte giderek daha doğru hale gelen bir durum yoktur. İlginç ki bu modelin puan kategorileri için
 #bir öncelik sonralık sıralaması varsayımı yoktur. Yani puanlar büyüdükçe daha iyi oluyor gibi bir
 #beklenti ile bu analizi yapmaz. Ayrıca her madde ayrı miktarda kategoriye sahip olabilir
 
