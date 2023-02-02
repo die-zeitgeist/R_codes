@@ -1,2 +1,6 @@
 mysample <- mydata[sample(1:nrow(mydata), 50,
    replace=FALSE),]
+
+
+
+df[sample(nrow(df), 3), ]
