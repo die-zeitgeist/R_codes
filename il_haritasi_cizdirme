@@ -1,0 +1,29 @@
+install.packages("tidyverse")
+install.packages("sp")
+install.packages("raster")
+
+library(tidyverse)
+library(sp)
+library(raster)
+
+tur_for <-  getData("GADM", country = "TUR", level = 1)
+
+isimler <- as.data.frame(tur_for$NAME_1)
+
+centroids.df <- as.data.frame(coordinates(tur_for))
+
+isim_verisi <- cbind(centroids.df, isimler)
+
+names(isim_verisi) <- c("Longitude", "Latitude", "isim")
+
+tur_for <- fortify(tur_for)
+
+id_and_cities <- read.csv("~/id_and_cities.csv") 
+
+final_map <- merge(tur_for, id_and_cities, by = "id")  
+
+ggplot(final_map) +geom_polygon( aes(x = long, y = lat, group = group, fill = mutluluk), color = "grey") +
+  geom_text(data=isim_verisi, aes(Longitude, Latitude, label = isim), size=2)+
+  coord_map() +theme_void() + labs(title = "Türkiye'nin illere göre mutluluk indeksi-2015",caption = "Kaynak: Türkiye Istatistik Kurumu") +
+  scale_fill_distiller(name = "Mutluluk indeksi",palette = "Spectral", limits = c(0,100), na.value = "white") +
+  theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5))
