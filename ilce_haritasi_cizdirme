@@ -1,0 +1,35 @@
+install.packages("tidyverse")
+install.packages("sp")
+install.packages("raster")
+library(tidyverse)
+library(sp)
+library(raster)
+
+
+tur_for <-  getData("GADM", country = "TUR", level = 2)
+ankara <- subset(tur_for, NAME_1=="Ankara")
+
+
+
+isimler <- as.data.frame(ankara$NAME_2)
+centroids.df <- as.data.frame(coordinates(ankara))
+id <- as.data.frame(getSpPPolygonsIDSlots(ankara))
+names(id) <- c("id")
+isim_verisi <- cbind(centroids.df, isimler, id)
+names(isim_verisi) <- c("Longitude", "Latitude", "isim", "id")
+
+
+ankara_ilce_gelismislik <- read.csv("./ankara_verisi.csv")
+
+ankara_for <- fortify(ankara)
+
+final_map <- merge(ankara_for, ankara_ilce_gelismislik, by = "id")  
+
+ggplot(final_map) +geom_polygon( aes(x = long, y = lat, group = group, fill = gelismislik), color = "grey") +
+  geom_text(data=ankara_ilce_gelismislik, aes(Longitude, Latitude, label = isim), size=3)+
+  coord_map() +theme_void() + labs(title = "Ankara'nın İlçeleri Gelişmişlik indeksi-2023",caption = "Kaynak: Türkiye Istatistik Kurumu") +
+  scale_fill_distiller(name = "Gelişmişlik indeksi",palette = "Spectral", limits = c(50,200), na.value = "white") +
+  theme(plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5))
+
+
+
