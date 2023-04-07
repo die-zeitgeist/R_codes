@@ -39,6 +39,33 @@ lexicon2 <- lexicon %>%
   select(c("WORD","TONE")) %>% 
   rename('word'="WORD",'value'="TONE")
 
+Frekans Analizi Yapmak
+instancesfile1 <- stream_in(file("/Users/user/AppData/Local/Programs/Python/Python311/Scripts/text-query-tweets.json"))
+
+first_of_all <- subset(instancesfile1, select= 1:6)
+user <- instancesfile1$user
+user_unique1 <- subset(user, select = 1:17)
+user_link <- user$link
+user_unique2 <- subset(user, select = 19:20)
+user_unique3 <- subset(user, select = 22:26)
+second_of_all <- subset(instancesfile1, select= 8:19)
+
+
+birlesmis <- cbind(user_unique1, user_link, user_unique2, user_unique3, fist_of_all, second_of_all)
+
+birlesmis2 = data.frame(lapply(birlesmis, as.character), stringsAsFactors=FALSE)
+write.csv(birlesmis2, file = "/Users/user/yuzyuze_tweetler.csv", row.names = FALSE)ü
+
+birlesmis2$replyCount <- as.numeric(birlesmis2$replyCount)
+birlesmis2$likeCount <- as.numeric(birlesmis2$likeCount)
+birlesmis2$followersCount <- as.numeric(birlesmis2$followersCount)
+
+
+library(dplyr)
+frekanslar <- birlesmis2 %>%
+  group_by(username, rawContent) %>%
+  summarise(count = n(), Reply = sum(replyCount), Like = sum(likeCount), rawContent, followersCount, date, created)
+
 
 
 #kelimeleri puanlamak
