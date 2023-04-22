@@ -1,0 +1,14 @@
+install.packages("dplyr")
+
+library(dplyr)
+
+mean_rank_verileri <- anova_deneme3 %>% arrange(desc(Puan))%>% 
+  mutate(rank = row_number()) %>%
+  group_by(Puan) %>%
+  mutate(mean_rank = mean(rank)) %>%
+  ungroup()
+
+
+mean_rank_verileri %>%
+  group_by(Grup) %>%
+  summarise_at(vars(mean_rank), list(name = mean))
