@@ -1,0 +1,3 @@
+library(psych)
+library(lavaan)
+omegaFromSem(lavaan_sonucu)
