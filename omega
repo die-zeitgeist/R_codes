@@ -1,3 +1,8 @@
 library(psych)
 library(lavaan)
 omegaFromSem(lavaan_sonucu)
+
+
+
+library(semTools)
+reliability(anomat_bagimsiz_dort_faktorlu_sonuc, what=c("omega"))
