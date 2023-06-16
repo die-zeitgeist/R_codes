@@ -1,0 +1,4 @@
+library(psych)
+library(dplyr)
+
+tapply(mikrokredi_esitleme_datasi[5:14], mikrokredi_esitleme_datasi$platform, alpha)
