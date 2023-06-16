@@ -1,0 +1,1 @@
+mikrokredi_wide_data <- spread(mikrokredi_esitleme_datasi, key = platform, value = toplam)
