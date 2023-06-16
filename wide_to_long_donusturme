@@ -1,0 +1,5 @@
+
+library(tidyr)
+data_long <- gather(birlesmis_se, yontem, std_error, V1:V3)
+
+yontem olusması istenen grup degiskeni(otomatik isim alacak kategoriler, std_error gruplanması istenen değişkenin adı, V1:V3 gruplanması istenen değişkenlerin aralığı)
