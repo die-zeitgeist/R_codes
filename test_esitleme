@@ -3,28 +3,32 @@ khan_academy_frekanslar_tablosu <- freqtab(mikrokredi_esitleme_datasi$toplam[mik
 udemy_frekanslar_tablosu <- freqtab(mikrokredi_esitleme_datasi$toplam[mikrokredi_esitleme_datasi$platform==2])
 edx_frekanslar_tablosu <- freqtab(mikrokredi_esitleme_datasi$toplam[mikrokredi_esitleme_datasi$platform==3]) 
 murat_ders_frekanslar_tablosu <- freqtab(mikrokredi_esitleme_datasi$toplam[mikrokredi_esitleme_datasi$platform==4]) 
-
-
-circle_arc_esitleme_sonucu4_1 <- equate(murat_ders_frekanslar_tablosu, khan_academy_frekanslar_tablosu, type = "circle-arc")
-circle_arc_esitleme_sonucu4_2 <- equate(murat_ders_frekanslar_tablosu, udemy_frekanslar_tablosu, type = "circle-arc") 
-circle_arc_esitleme_sonucu4_3 <- equate( murat_ders_frekanslar_tablosu, edx_frekanslar_tablosu, type = "circle-arc") 
-circle_arc_esitleme_sonucu4_1$concordance 
-circle_arc_esitleme_sonucu4_2$concordance 
-circle_arc_esitleme_sonucu4_3$concordance
-
-
-circle_arc_esitleme_sonucu4_3$coefficients
-
-
-plot(circle_arc_esitleme_sonucu4_1, circle_arc_esitleme_sonucu4_2, circle_arc_esitleme_sonucu4_3) 
-
 View(murat_ders_frekanslar_tablosu)
 View(edx_frekanslar_tablosu)
 View(khan_academy_frekanslar_tablosu)
 
+khan <- equate(murat_ders_frekanslar_tablosu, khan_academy_frekanslar_tablosu, type = "circle-arc")
+udemy <- equate(murat_ders_frekanslar_tablosu, udemy_frekanslar_tablosu, type = "circle-arc") 
+edx <- equate( murat_ders_frekanslar_tablosu, edx_frekanslar_tablosu, type = "circle-arc") 
+khan$concordance 
+udemy$concordance 
+edx$concordance
 
-birlesmisconcordance_1 <- qpcR:::cbind.na(circle_arc_esitleme_sonucu4_1$concordance, circle_arc_esitleme_sonucu4_2$concordance)
-birlesmisconcordance_2 <- qpcR:::cbind.na(circle_arc_esitleme_sonucu4_1$concordance, circle_arc_esitleme_sonucu4_3$concordance)
+
+khan$coefficients
+udemy$coefficients
+edx$coefficients
+
+summary(khan)
+
+
+plot(khan, udemy, edx, legendtext = c("khan", "udemy", "edx")) 
+
+
+
+
+birlesmisconcordance_1 <- qpcR:::cbind.na(khan$concordance, udemy$concordance)
+birlesmisconcordance_2 <- qpcR:::cbind.na(udemy$concordance, edx$concordance)
 dortle_tumunun_concordance_tablolari <- cbind(birlesmisconcordance_1, birlesmisconcordance_2)
 write.csv(dortle_tumunun_concordance_tablolari, file="/Documents and Settings/user/Downloads/dortle_tumunun_concordance.csv", row.names = FALSE)
 
