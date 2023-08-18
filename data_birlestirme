@@ -1,0 +1,7 @@
+İki data dosyasını alt alta birlestirme (Appending the two datafiles)
+
+  df3 <- rbind(df1,df2)
+
+  
+ 
+  
