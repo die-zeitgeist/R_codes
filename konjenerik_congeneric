@@ -1,0 +1,27 @@
+library(lavaan)
+
+
+paralel <- 'birinci =~ a*m1+a*m8+a*m15+a*m22
+                  m1~~dene1*m1
+                  m8~~dene1*m8
+                  m15~~dene1*m15
+                  m22~~dene1*m22'
+
+esdeger <- 'birinci =~ a*m1+a*m8+a*m15+a*m22'
+
+congeneric <- 'birinci =~ m1+m8+m15+m22'
+
+
+paralel_sonuc <- cfa(paralel, motiv_factor)
+esdeger_sonuc <- cfa(esdeger, motiv_factor)
+congeneric_sonuc <- cfa(congeneric, motiv_factor)
+
+
+
+summary(paralel_sonuc, fit.measures=T)
+summary(esdeger_sonuc, fit.measures=T)
+summary(congeneric_sonuc, fit.measures=T)
+
+
+
+anova(paralel_sonuc, congeneric_sonuc)
