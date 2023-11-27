@@ -6,3 +6,34 @@ data(Brennan.3.2)
 formula.Brennan.3.2 <- "Score ~ (1 | Person) + (1 | Task) + (1 | Rater:Task) + (1 | Person:Task)"
     
 gstudy(data = Brennan.3.2, formula = formula.Brennan.3.2)
+
+
+install.packages("gtheory")
+
+library(gtheory)
+
+formula <- "Score ~ (1 | Person) + (1 | Task) + (1 | Rater:Task) + (1 | Person:Task)"
+
+gtheory_sonuc <- gstudy(Brennan.3.2, formula)
+
+
+
+
+
+#Rater güvenilirliği miktarı ve kaç kat artarsa ne kadar güvenilirlik elde edilir
+formula2 <- "Score ~ (1| Person)+(1| Rater)"
+gtheory_sonuc2 <- gstudy(Brennan.3.2, formula2)
+gtheory_sonuc2
+dstudy_rater_sonuc <- dstudy(gtheory_sonuc2, colname.objects = "Person", data = Brennan.3.2, colname.scores = "Score")
+dstudy_rater_sonuc
+
+k <- 15
+dstudy.out3 <- dstudy_rater_sonuc$var.universe/(dstudy_rater_sonuc$var.universe + (dstudy_rater_sonuc$var.error.rel/k))
+dstudy.out3
+
+
+
+
+
+
+
