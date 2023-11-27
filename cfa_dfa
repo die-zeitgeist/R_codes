@@ -1,0 +1,25 @@
+library(lavaan)
+
+yedi_faktorlu <- 'birinci =~ m1+m8+m15+m22
+                  ikinci =~ m2+m9+m16+m23
+                  ucuncu =~ m3+m10+m17+m24
+                  dorduncu =~ m4+m11+m18+m25
+                  besinci =~ m5+m12+m19+m26
+                  altinci =~ m6+m13+m20+m27
+                  yedinci =~ m7+m14+m21+m28'
+
+dogrulayici_sonuc <- cfa(yedi_faktorlu, motiv_factor, ordered=T)
+
+
+summary(dogrulayici_sonuc, fit.measures=T)
+
+
+modindices(dogrulayici_sonuc, sort=T)
+
+library(semPlot)
+semPaths(dogrulayici_sonuc, what = "std", style = "lisrel", whatLabels = "std",
+         rotation = 3, layout = "circle2", mar = c(2, 2, 2, 2, 2, 2, 2),
+         nCharNodes = 15,
+         sizeMan = 6, sizeMan2 = 2, groups = "latents",
+         color = c("#011D70","#D10000","#58A069","#BF5B04","black", "purple", "yellow"),
+         residuals = TRUE)
