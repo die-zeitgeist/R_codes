@@ -23,3 +23,10 @@ semPaths(dogrulayici_sonuc, what = "std", style = "lisrel", whatLabels = "std",
          sizeMan = 6, sizeMan2 = 2, groups = "latents",
          color = c("#011D70","#D10000","#58A069","#BF5B04","black", "purple", "yellow"),
          residuals = TRUE)
+
+
+Benzer uyum gösteren farklı modellerin parsimonus açısından daha iyisinin seçilmesi
+
+library(ockhamSEM)
+res <- run.fitprop(tek_faktorlu_sonuc, dereceli_sonuc, fit.measure=c("srmr","cfi"),
+                   rmethod="onion",reps=10)
