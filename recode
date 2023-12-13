@@ -5,6 +5,13 @@ recode(data$m1, `2` = "b", `4` = "d", .missing = "missing")
 recode(data$m1, `2` = 1, `4` = 2, .missing = 999) $dplyr sadece tek kolona yapabilir recode
 
 
+reverse item recode
+install.packages(“car”)
+library(car)
+x2 = recode(x, ‘1=4; 2=3; 3=2; 4=1’)
+
+
+
 Conditional RECODE
 
 mod_mediation2$tanidik_group[mod_mediation2$tanidik_sayisi_mod < 5 ] <- "1"
