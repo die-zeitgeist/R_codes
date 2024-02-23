@@ -5,6 +5,15 @@ recode(data$m1, `2` = "b", `4` = "d", .missing = "missing")
 recode(data$m1, `2` = 1, `4` = 2, .missing = 999) $dplyr sadece tek kolona yapabilir recode
 
 
+Sadece bir değeri değiştirip diğerlerini olduğu gibi bırakmak
+
+library(dplyr)
+
+change_values <- c('B', 'D')
+sampledf %>% mutate(across(var1:var2, ~ifelse(.x %in% change_values, 0, .x)))
+
+
+
 reverse item recode
 install.packages(“car”)
 library(car)
