@@ -1,0 +1,25 @@
+sampling 
+simple random
+
+rand_df <- df[sample(nrow(df), size=3), ]
+
+
+
+
+
+
+stratified sampling 
+
+library(splitstackshape)
+
+
+DF <- data.frame(
+  ID = 1:100,
+  A = sample(c("AA", "BB", "CC", "DD", "EE"), 100, replace = TRUE),
+  B = rnorm(100), C = abs(round(rnorm(100), digits=1)),
+  D = sample(c("CA", "NY", "TX"), 100, replace = TRUE),
+  E = sample(c("M", "F"), 100, replace = TRUE))
+
+
+
+stratified(DF, "D", c(CA = 5, NY = 3, TX = 2))
