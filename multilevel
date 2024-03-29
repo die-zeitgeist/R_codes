@@ -26,3 +26,109 @@ fit <- sem(model = model, data = multilevel_latent, cluster = "cluster")
 lavInspect(fit, "icc")
 
 summary(fit, fit.measures=TRUE)     
+
+
+
+
+
+
+
+####MULTILEVEL REGRESYON UZERINDE CALISILMALI######
+
+
+birinci_model <- lm(akadbasari ~ cinsiyet+doðumt, data = ikinci_model$model)
+
+ikinci_model <- lm(akadbasari ~ cinsiyet+doðumt+okultutum+zeka, regresyon_1_)
+
+
+
+summary(birinci_model)
+summary(ikinci_model)
+
+anova(birinci_model, ikinci_model)
+
+
+
+Multilevel  Çok düzeyli
+
+
+memnuniyet ~ tutum+orgutsel_baglilik          +kurumun_personele_yatirimi+kurumun bulundugu_bolge
+
+
+
+
+yanlis_regresyon <- lm(performans~tutum+personel_egitimi+alinan_odeme, multilevel2)
+
+summary(yanlis_regresyon)
+
+
+library(lme4)
+
+bos_model <- lmer(performans ~ 1+(1|clus), multilevel2)
+
+summary(bos_model)
+
+
+multilevel_sonuc <- lmer(performans ~ tutum+personel_egitimi+alinan_odeme+(1+personel_egitimi+alinan_odeme|clus), multilevel2 )
+
+summary(multilevel_sonuc)
+
+
+multilevel2$sonuc <- predict(multilevel_sonuc)
+
+library(dplyr)
+library(ggplot2)
+multilevel2 %>% 
+  ggplot(aes(tutum, sonuc)) + 
+  geom_smooth(se = F, method = lm, size = 2) +
+  stat_smooth(aes(color = clus, group = clus),
+              geom = "line", alpha = 0.4, size = 1) +
+  theme_bw() +
+  guides(color = F) +
+  labs(x = "tutum", 
+       y = "performans", 
+       color = "clus")
+
+library(lattice)
+
+qqmath(ranef(multilevel_sonuc, condVar = TRUE))
+
+
+coefs_multilevel <- coef(multilevel_sonuc)
+
+
+coefs_multilevel$clus %>%
+  mutate(clus = rownames(coefs_multilevel$clus))  %>% 
+  ggplot(aes(alinan_odeme, `(Intercept)`, label = clus)) + 
+  geom_point() + 
+  geom_smooth(se = F, method = lm) +
+  geom_label(nudge_y = 0.15, alpha = 0.5) +
+  theme_bw() +
+  labs(x = "Slope", y = "Intercept")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+m2<-lmer(performans ~ 1 + (1|clus), data=multilevel2)
+
+summary(m2)
+
+model <- lmer(performans ~ tutum + (1+personel_egitimi+alinan_odeme | clus), data=multilevel2)
