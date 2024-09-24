@@ -1,0 +1,31 @@
+Friedman testi
+
+
+install.packages("rstatix")
+library(rstatix)
+fri <- read.csv("friedman.csv")
+fri$ID <- seq.int(nrow(fri))
+fri <- fri %>%
+  gather(key = "olcum", value = "puan", ontest, sontest) %>%
+  convert_as_factor(olcum, ID)
+
+fri %>%
+  group_by(olcum,cins) %>%
+  get_summary_stats(puan, type = "common")
+
+install.packages("ggpubr")
+library(ggpubr)
+ggboxplot(fri, x = "olcum", y = "puan", fill = "cins")
+
+res.fried <- fri %>% friedman_test(puan ~ olcum |ID)
+res.fried
+
+fri %>% friedman_effsize(puan ~ olcum |ID)
+
+
+
+
+
+
+
+
