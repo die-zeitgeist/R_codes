@@ -3,18 +3,70 @@ library(gtheory)
 
 data(Brennan.3.2)
     
-formula.Brennan.3.2 <- "Score ~ (1 | Person) + (1 | Task) + (1 | Rater:Task) + (1 | Person:Task)"
-    
-gstudy(data = Brennan.3.2, formula = formula.Brennan.3.2)
-
-
-install.packages("gtheory")
-
-library(gtheory)
-
 formula <- "Score ~ (1 | Person) + (1 | Task) + (1 | Rater:Task) + (1 | Person:Task)"
 
 gtheory_sonuc <- gstudy(Brennan.3.2, formula)
+
+
+#Rater sayısı ile güvenirlik ilişkisi. Bunun için formülün sadeleştirilmesi ve etkileşimlerden arındırılması lazım.
+library(gtheory)
+formula <- "Score ~ (1 | Person) + (1 | Rater)"
+gtheory_sonuc2 <- gstudy(Brennan.3.2, formula)
+
+#yukarıda gtheory ile ilk analiz yapıldı. aşağıda dstudy ile haliahazırdaki güvenirliği göreceğiz
+
+dstudy_rater_sonuc <- dstudy(gtheory_sonuc2, colname.objects = "person", data = gtheory_data, colname.scores = "score")
+dstudy_rater_sonuc
+
+#1 rater varken güvenirliğin ne olacağı bulunabilir. 
+#Bunun için datanın adını ve person dışında colname.scoreları da yazmayacağız. warning alacağız ama 1 kişi var uyarısı olacak 
+D1 <- dstudy(gtheory_sonuc2, colname.objects = "Person")
+D1$generalizability
+
+#ardından K değerini değiştirerek hangi durumunda güvenirliğin ne olacağını görebileceğiz. 
+
+K <- 12
+G2 <- D1$var.universe/(D1$var.universe + (D1$var.error.rel/K))
+G2
+
+#Bunu görselleştirmek istersek:
+n_prime <- 1:25
+#relative error variance
+rel_err_var <-
+  gtheory_sonuc2$components[3,2]/n_prime
+#absolute error variance
+abs_err_var <-
+  gtheory_sonuc2$components[2,2]/n_prime +
+  gtheory_sonuc2$components[3,2]/n_prime
+#calculate generalizability coefficient
+gen_coef <-
+  gtheory_sonuc2$components[1,2]/(gtheory_sonuc2$components[1,2]
+                      + rel_err_var)
+#calculate dependability coefficient
+dep_coef <-
+  gtheory_sonuc2$components[1,2]/(gtheory_sonuc2$components[1,2]
+                      + abs_err_var)
+
+library(ggplot2)
+
+# Etiketler
+label1 <- "rho"
+label2 <- "phi"
+
+# Veri çerçevesi
+# Burada, `dep_coef` eklenmeli veya tanımlanmalı, aksi halde hata alırsınız.
+data <- data.frame(x = n_prime, y = gen_coef, dep_coef = dep_coef, label = label1)
+
+# Grafik oluşturma
+ggplot(data) +
+  geom_text(aes(x, y, label = label1), parse = TRUE) +
+  geom_text(aes(x, dep_coef, label = label2), parse = TRUE) +
+  ggtitle("Plot") +
+  xlab("D Study Sample Sizes") +
+  ylab("Coefficient")
+
+
+
 
 
 
