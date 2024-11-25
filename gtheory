@@ -83,6 +83,8 @@ k <- 15
 dstudy.out3 <- dstudy_rater_sonuc$var.universe/(dstudy_rater_sonuc$var.universe + (dstudy_rater_sonuc$var.error.rel/k))
 dstudy.out3
 
+#yukarıda var.universe person variance içindir. Bunun yerine var.rater alınırsa rater için olan etki ölçülebilir
+
 
 
 
