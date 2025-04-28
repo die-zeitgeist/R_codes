@@ -1,0 +1,9 @@
+library(sampling)  #once kütüphaneyi aktive ediyoruz
+
+motiv_factor$sinif <- as.factor(motiv_factor$sinif) # sinif değişkenini faktör haline getiriyoruz. 
+motiv_factor_clean <- motiv_factor[!is.na(motiv_factor$sinif), ]  # Missing (kayıp/eksik)verileri temizliyoruz. 
+
+motiv_factor_clean <- motiv_factor_clean[order(motiv_factor_clean$sinif), ] #faktöre göre(burada sınıf) sıraya diziyoruz yoksa ilk gördüğünden başlıyor
+
+st=strata(motiv_factor_clean, "sinif", size = c(50,40,30,20), method="srswor") # sinif değişkenine göre tabakalı örneklem yapıyor.
+orneklem_verisi <- getdata(motiv_factor_clean,st) #nihai verimizi elde ediyoruz
