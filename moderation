@@ -1,0 +1,19 @@
+centered_sonuc <- lm(V1 ~ c_V2*c_V4, only_moderation)
+
+summary(centered_sonuc)
+
+#etkileşim grafiğini çizdirme
+library(interactions)
+
+interact_plot(centered_sonuc, "c_V2", "c_V4")
+
+#anlamlı etkinin moderatörün hangi noktasından itibaren başladığını bulma (sadece sürekli değişkende) mesela V4'ün 2 ve altında eğim hep anlamlı etki bildiriyor. 
+johnson_neyman(v2v4_moderation_sonuc, pred = c_V2, modx = c_V4)
+
+#moderatörün -1, +1 ve mean bölgelerinde b değerlerini bulma
+
+# basit eğim sonuçlarını al:
+simple_slopes <- sim_slopes(v2v4_moderation_sonuc, pred = c_V2, modx = c_V4)
+
+# sonuçları görüntüle:
+simple_slopes
