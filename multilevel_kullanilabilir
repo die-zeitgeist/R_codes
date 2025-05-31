@@ -1,0 +1,99 @@
+
+yanlis_regresyon_sonucu <- lm(performans ~ tutum + personel_egitimi + alinan_odeme, multilevel)
+
+yanlis_regresyon_sonucu
+
+summary(yanlis_regresyon_sonucu)
+
+
+library(lavaan)
+
+yanlis_model <- "performans ~ tutum + personel_egitimi + alinan_odeme
+                 performans ~ 1"
+
+yanlis_sem_sonucu <- sem(yanlis_model, multilevel)
+
+summary(yanlis_sem_sonucu)
+
+
+
+
+
+
+multilevel_model <- "level: 1
+                     performans ~ tutum
+
+                     level: 2
+                     performans ~ alinan_odeme + personel_egitimi"
+
+multilevel_sonuc <- sem(multilevel_model, multilevel, cluster = "clus")
+
+summary(multilevel_sonuc)
+
+
+lavInspect(multilevel_sonuc, "icc")
+
+
+Random intercept model
+library(lme4)
+
+lmer_sonucu <- lmer(performans ~ tutum + alinan_odeme + personel_egitimi + (1 | clus), multilevel)
+
+summary(lmer_sonucu)
+
+
+
+Random slope model
+
+random_slope_sonucu <- lmer(performans ~ tutum + alinan_odeme + personel_egitimi + (1 + tutum | clus), multilevel)
+
+summary(random_slope_sonucu)
+
+ranef(random_slope_sonucu)$clus
+
+intercept0 <- fixef(random_slope_sonucu)["(Intercept)"]
+slope1 <- fixef(random_slope_sonucu)["tutum"]
+
+ranef_df <- ranef(random_slope_sonucu)$clus
+
+data.frame(
+  clus = rownames(ranef_df),
+  intercept = intercept0 + ranef_df[,"(Intercept)"],
+  slope = slope1 + ranef_df[,"tutum"]
+)
+
+
+library(lme4)
+library(ggplot2)
+library(dplyr)
+
+multilevel$clus <- as.factor(multilevel$clus)
+# Sabit katsayıları al
+intercept0 <- fixef(random_slope_sonucu)["(Intercept)"]
+slope1 <- fixef(random_slope_sonucu)["tutum"]
+
+# Grup bazlı sapmalar
+ranefs <- ranef(random_slope_sonucu)$clus
+
+# Her clus için toplam intercept ve slope
+coefs_by_clus <- data.frame(
+  clus = rownames(ranefs),
+  intercept = intercept0 + ranefs[,"(Intercept)"],
+  slope = slope1 + ranefs[,"tutum"]
+)
+
+
+# coef tablosunu birey verisine ekle (merge)
+plot_data <- left_join(multilevel, coefs_by_clus, by = "clus")
+
+ggplot(plot_data, aes(x = tutum, y = performans, color = clus)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(aes(intercept = intercept, slope = slope, color = clus), size = 1) +
+  theme_minimal() +
+  labs(title = "Her Clus İçin Regresyon Doğruları",
+       subtitle = "Random Intercept + Random Slope Modeli",
+       x = "Tutum (Level 1)", y = "Performans") +
+  theme(legend.position = "none")
+
+
+
