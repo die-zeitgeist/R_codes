@@ -10,3 +10,120 @@ model <- ' # direct effect
          '
 fit <- sem(model, data = Data)
 summary(fit)
+
+
+
+
+
+#Kısmi aracılık 
+
+set.seed(123)
+
+N <- 500   # örneklem büyüklüğü
+
+# 1. Bağımsız değişken X (0-100 arası)
+X <- round(runif(N, 0, 100))
+
+# 2. Aracı değişken M
+#    M = 0.5*X + hata  (kısmi ama güçlü bir ilişki)
+M_latent <- 0.5 * X + rnorm(N, mean = 0, sd = 10)
+
+# M'yi 0-100 ölçeğine dönüştür
+M <- round(scales::rescale(M_latent, to = c(0, 100)))
+
+# 3. Sonuç değişkeni Y
+#    Y = 0.3*X + 0.4*M + hata   (hem X hem M etkili → partial mediation)
+Y_latent <- 0.3 * X + 0.4 * M + rnorm(N, mean = 0, sd = 15)
+
+# Y'yi 0-100 ölçeğine dönüştür
+Y <- round(scales::rescale(Y_latent, to = c(0, 100)))
+
+# Veri çerçevesi
+dat_partial_med <- data.frame(X, M, Y)
+
+head(dat_partial_med)
+summary(dat_partial_med)
+
+
+
+
+#Kısmi serial mediation
+
+library(lavaan)
+
+model <- '
+  M ~ a*X
+  Y ~ b*M + c*X
+  indirect := a*b
+  direct := c
+  total := c + a*b
+'
+
+fit <- sem(model, data = dat_partial_med)
+summary(fit, standardized = TRUE, fit.measures = TRUE)
+
+
+
+
+
+
+
+set.seed(2025)
+
+N <- 500  # örneklem büyüklüğü
+
+# 1. Bağımsız değişken X (0-100 arası tamsayı)
+X <- round(runif(N, 0, 100))
+
+# 2. Birinci aracı (M1)
+#    M1_latent = 0.5*X + hata
+M1_latent <- 0.5 * X + rnorm(N, mean = 0, sd = 10)
+M1 <- round(scales::rescale(M1_latent, to = c(0, 100)))
+
+# 3. İkinci aracı (M2)
+#    M2_latent = 0.6*M1 + 0.2*X + hata
+#    (Böylece hem X hem de M1 M2'yi etkiliyor → seri yapı güçleniyor)
+M2_latent <- 0.6 * M1 + 0.2 * X + rnorm(N, mean = 0, sd = 10)
+M2 <- round(scales::rescale(M2_latent, to = c(0, 100)))
+
+# 4. Sonuç değişkeni Y
+#    Y_latent = 0.4*M2 + 0.2*M1 + 0.2*X + hata
+#    (Hem seri yol hem de X'in doğrudan etkisi → kısmi serial mediation)
+Y_latent <- 0.4 * M2 + 0.2 * M1 + 0.2 * X + rnorm(N, mean = 0, sd = 15)
+Y <- round(scales::rescale(Y_latent, to = c(0, 100)))
+
+# Veri seti
+dat_serial_med <- data.frame(X, M1, M2, Y)
+
+head(dat_serial_med)
+summary(dat_serial_med)
+
+
+
+
+
+library(lavaan)
+
+model_serial <- '
+  # Regresyon denklemleri
+  M1 ~ a1*X
+  M2 ~ d*M1 + a2*X
+  Y  ~ b1*M1 + b2*M2 + c*X
+
+  # Dolaylı etkiler
+  ind_X_M1_Y     := a1*b1               # X → M1 → Y
+  ind_X_M2_Y     := a2*b2               # X → M2 → Y
+  ind_serial     := a1*d*b2             # X → M1 → M2 → Y
+
+  # Toplam dolaylı etki
+  ind_total      := ind_X_M1_Y + ind_X_M2_Y + ind_serial
+
+  # Doğrudan ve toplam etki
+  direct         := c
+  total          := direct + ind_total
+'
+
+fit_serial <- sem(model_serial, data = dat_serial_med)
+summary(fit_serial, standardized = TRUE, fit.measures = TRUE)
+
+
