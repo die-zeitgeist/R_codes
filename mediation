@@ -127,3 +127,33 @@ fit_serial <- sem(model_serial, data = dat_serial_med)
 summary(fit_serial, standardized = TRUE, fit.measures = TRUE)
 
 
+
+
+
+#PARALEL MEDİATİON
+
+library(lavaan)
+
+model_parallel <- '
+  # Regresyon denklemleri
+  M1 ~ a1*X
+  M2 ~ a2*X
+  Y  ~ b1*M1 + b2*M2 + c*X
+
+  # Dolaylı etkiler
+  ind1 := a1*b1        # X -> M1 -> Y
+  ind2 := a2*b2        # X -> M2 -> Y
+
+  # Toplam dolaylı etki
+  ind_total := ind1 + ind2
+
+  # Doğrudan ve toplam etki
+  direct := c
+  total  := direct + ind_total
+'
+
+fit_parallel <- sem(model_parallel, data = dat_parallel_med)
+summary(fit_parallel, standardized = TRUE, fit.measures = TRUE)
+
+
+
