@@ -1,0 +1,42 @@
+library(dplyr)
+library(purrr)
+
+oranlar <- c(
+  "Kitap"                             = 0.30,
+  "Ünite Özeti"                       = 0.30,
+  "Canlı Ders Kayıtları"              = 0.25,
+  "Çıkmış Sınav Soruları AÖF Dönem Sonu" = 0.15
+)
+
+n_total <- 2000
+
+hedefler <- tibble(
+  material = names(oranlar),
+  oran     = as.numeric(oranlar)
+) %>%
+  mutate(n_hedef = round(oran * n_total))
+hedefler
+
+
+a2_filt <- a2 %>%
+  filter(material %in% names(oranlar))
+
+# Her kategoriyi ayrı data.frame olarak ayır
+a2_split <- split(a2_filt, a2_filt$material)
+
+# Split’teki her kategori için hedef n’leri sıraya diz
+n_vec <- hedefler$n_hedef[match(names(a2_split), hedefler$material)]
+n_vec
+
+
+set.seed(123)  # reproducibility için, istersen
+
+sampled <- map2_df(a2_split, n_vec, ~ slice_sample(.x, n = .y))
+
+
+sampled %>%
+  count(material) %>%
+  mutate(oransal = n / sum(n))
+
+
+
