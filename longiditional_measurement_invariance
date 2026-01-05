@@ -139,4 +139,10 @@ m4_t1 ~~ m4_t2
 m5_t1 ~~ m5_t2
 m6_t1 ~~ m6_t2
 '
+#Analizi her model için yap. group yok. Veriyi repeated. 
+fit_scalar <- cfa(
+  model_scalar,
+  data = dat,
+  estimator = "MLR"
+)
 
