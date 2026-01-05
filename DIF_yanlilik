@@ -13,18 +13,20 @@ plot(dif_reg_sonuc, plot= "itemCurve", item=1, itemFit = "best")
 
 
 
+library(mirt)
+#madde güçlükleri yakın olanları anchor madde ilan et.
+colMeans(madde_analizi_yanlilik[madde_analizi_yanlilik$cins==1, 1:102]) - colMeans(madde_analizi_yanlilik[madde_analizi_yanlilik$cins==2, 1:102])
+
+anchor <- c("m2", "m3", "m14")
 
 library(mirt)
-
-madde_analizi_yanlilik$cins_t <- ifelse(madde_analizi_yanlilik$cins==1, "K", "E")
- 
-irt_dif_sonuc <-  multipleGroup(madde_analizi_yanlilik[2:11], model = 1, itemtype = "3PL",
-              group = madde_analizi_yanlilik$cins_t, 
-              invariance = c("m1", "m2", "m3", "free_means", "free_vars"))
-
-dif_nihai_sonuc <- DIF(irt_dif_sonuc, c("a1", "d", "g"), plotdif = TRUE)
-
-dif_nihai_sonuc <- DIF(irt_dif_sonuc, c("g"), plotdif = TRUE) #hangisinden kaynaklaniyor
+sonuc <- multipleGroup(madde_analizi_yanlilik[,2:31], group = as.factor(madde_analizi_yanlilik$cins), itemtype = "2PL", 
+              invariance = c(anchor, "free_means", "free_var"))
 
 
-dif_nihai_sonuc
+dif_sonuc <- DIF(sonuc, which.par = c("a1", "d"), scheme = "drop")
+
+dif_sonuc
+
+plot(sonuc, type = "trace", which.items = 4, facet_items = T)
+
