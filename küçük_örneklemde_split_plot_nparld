@@ -1,0 +1,44 @@
+library(nparLD)
+
+data(nparld_icin)
+attach(nparld_icin)
+sonuc<-f1.ld.f1(y=puan, time=olcum, group=grup, subject=birey)
+options(scipen = 999)
+
+sonuc$RTE
+
+sonuc$case2x2
+
+sonuc$ANOVA.test
+
+
+library(tidyverse)
+
+plot_data <- tibble(
+  grup = rep(c("Deney", "Kontrol"), each = 2),
+  zaman = rep(c("Ön test", "Son test"), times = 2),
+  RTE   = c(0.401875, 0.6715625,
+            0.2721875, 0.654375)
+)
+
+
+
+ggplot(plot_data, aes(x = zaman, y = RTE, group = grup, color = grup)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  scale_color_manual(
+    values = c("Deney" = "black", "Kontrol" = "#d95f5f"),
+    name   = "Grup"          # ← legend başlığı
+  ) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(
+    x = "Ölçüm Zamanı",
+    y = "Göreli Etki (RTE)",
+    title = "Gruplara Göre Zaman İçindeki Göreli Etkiler"
+  ) +
+  theme_classic(base_size = 14) +
+  theme(
+    legend.position = "top",
+    legend.title = element_text(face = "bold"),
+    axis.title = element_text(face = "bold")
+  )
