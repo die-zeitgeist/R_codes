@@ -1,0 +1,142 @@
+#Configural
+model_configural <- '
+# Faktörler
+f1_t1 =~ m1_t1 + m2_t1 + m3_t1
+f2_t1 =~ m4_t1 + m5_t1 + m6_t1
+
+f1_t2 =~ m1_t2 + m2_t2 + m3_t2
+f2_t2 =~ m4_t2 + m5_t2 + m6_t2
+
+# Faktör kovaryansları (longitudinal bağımlılık)
+f1_t1 ~~ f1_t2
+f2_t1 ~~ f2_t2
+
+# Aynı zaman içi faktör kovaryansı
+f1_t1 ~~ f2_t1
+f1_t2 ~~ f2_t2
+
+# Madde hata kovaryansları (aynı maddeler)
+m1_t1 ~~ m1_t2
+m2_t1 ~~ m2_t2
+m3_t1 ~~ m3_t2
+m4_t1 ~~ m4_t2
+m5_t1 ~~ m5_t2
+m6_t1 ~~ m6_t2
+'
+
+#Metrik
+model_metric <- '
+# Faktörler (yükler eşit)
+f1_t1 =~ l1*m1_t1 + l2*m2_t1 + l3*m3_t1
+f2_t1 =~ l4*m4_t1 + l5*m5_t1 + l6*m6_t1
+
+f1_t2 =~ l1*m1_t2 + l2*m2_t2 + l3*m3_t2
+f2_t2 =~ l4*m4_t2 + l5*m5_t2 + l6*m6_t2
+
+# Faktör kovaryansları
+f1_t1 ~~ f1_t2
+f2_t1 ~~ f2_t2
+f1_t1 ~~ f2_t1
+f1_t2 ~~ f2_t2
+
+# Madde hata kovaryansları
+m1_t1 ~~ m1_t2
+m2_t1 ~~ m2_t2
+m3_t1 ~~ m3_t2
+m4_t1 ~~ m4_t2
+m5_t1 ~~ m5_t2
+m6_t1 ~~ m6_t2
+'
+
+#Scalar
+model_scalar <- '
+# Faktörler
+f1_t1 =~ l1*m1_t1 + l2*m2_t1 + l3*m3_t1
+f2_t1 =~ l4*m4_t1 + l5*m5_t1 + l6*m6_t1
+
+f1_t2 =~ l1*m1_t2 + l2*m2_t2 + l3*m3_t2
+f2_t2 =~ l4*m4_t2 + l5*m5_t2 + l6*m6_t2
+
+# Interceptler (eşit)
+m1_t1 ~ i1*1
+m1_t2 ~ i1*1
+m2_t1 ~ i2*1
+m2_t2 ~ i2*1
+m3_t1 ~ i3*1
+m3_t2 ~ i3*1
+
+m4_t1 ~ i4*1
+m4_t2 ~ i4*1
+m5_t1 ~ i5*1
+m5_t2 ~ i5*1
+m6_t1 ~ i6*1
+m6_t2 ~ i6*1
+
+# Faktör kovaryansları
+f1_t1 ~~ f1_t2
+f2_t1 ~~ f2_t2
+f1_t1 ~~ f2_t1
+f1_t2 ~~ f2_t2
+
+# Madde hata kovaryansları
+m1_t1 ~~ m1_t2
+m2_t1 ~~ m2_t2
+m3_t1 ~~ m3_t2
+m4_t1 ~~ m4_t2
+m5_t1 ~~ m5_t2
+m6_t1 ~~ m6_t2
+'
+#Strict
+model_strict <- '
+# Faktörler
+f1_t1 =~ l1*m1_t1 + l2*m2_t1 + l3*m3_t1
+f2_t1 =~ l4*m4_t1 + l5*m5_t1 + l6*m6_t1
+
+f1_t2 =~ l1*m1_t2 + l2*m2_t2 + l3*m3_t2
+f2_t2 =~ l4*m4_t2 + l5*m5_t2 + l6*m6_t2
+
+# Interceptler
+m1_t1 ~ i1*1
+m1_t2 ~ i1*1
+m2_t1 ~ i2*1
+m2_t2 ~ i2*1
+m3_t1 ~ i3*1
+m3_t2 ~ i3*1
+
+m4_t1 ~ i4*1
+m4_t2 ~ i4*1
+m5_t1 ~ i5*1
+m5_t2 ~ i5*1
+m6_t1 ~ i6*1
+m6_t2 ~ i6*1
+
+# Hata varyansları (eşit)
+m1_t1 ~~ e1*m1_t1
+m1_t2 ~~ e1*m1_t2
+m2_t1 ~~ e2*m2_t1
+m2_t2 ~~ e2*m2_t2
+m3_t1 ~~ e3*m3_t1
+m3_t2 ~~ e3*m3_t2
+
+m4_t1 ~~ e4*m4_t1
+m4_t2 ~~ e4*m4_t2
+m5_t1 ~~ e5*m5_t1
+m5_t2 ~~ e5*m5_t2
+m6_t1 ~~ e6*m6_t1
+m6_t2 ~~ e6*m6_t2
+
+# Faktör kovaryansları
+f1_t1 ~~ f1_t2
+f2_t1 ~~ f2_t2
+f1_t1 ~~ f2_t1
+f1_t2 ~~ f2_t2
+
+# Madde hata kovaryansları
+m1_t1 ~~ m1_t2
+m2_t1 ~~ m2_t2
+m3_t1 ~~ m3_t2
+m4_t1 ~~ m4_t2
+m5_t1 ~~ m5_t2
+m6_t1 ~~ m6_t2
+'
+
