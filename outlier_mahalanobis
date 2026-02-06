@@ -1,35 +1,23 @@
-install.packages("robustbase")  # bir kere
+# install.packages("robustbase")
 library(robustbase)
 
-X <- as.matrix(your_data_frame)
+# X: sadece sayısal sütunlardan oluşan veri (data.frame veya matrix)
+X <- as.matrix(df_numeric)
 
-p <- ncol(X)
-N <- nrow(X)
+# 1) Robust location + covariance (MCD)
+fit <- covMcd(X)              # robust center & cov
 
-fit <- covMcd(X)                 # robust location + covariance (MCD)
 mu_r <- fit$center
 S_r  <- fit$cov
 
+# 2) Robust Mahalanobis D^2
 D2_robust <- mahalanobis(X, center = mu_r, cov = S_r)
 
-pval_robust <- pchisq(D2_robust, df = p, lower.tail = FALSE)
+# 3) p-değerleri (MVN varsayımı altında)
+p <- ncol(X)
+pval <- pchisq(D2_robust, df = p, lower.tail = FALSE)
 
-# aynı karar kuralları
-alpha <- 0.001
-out_fixed_r <- pval_robust < alpha
-
-alpha_family <- 0.05
-out_bonf_r <- pval_robust < (alpha_family / N)
-
-out_fdr_r <- p.adjust(pval_robust, method = "BH") < 0.05
-
-result_robust <- data.frame(
-  D2 = D2_robust,
-  pval = pval_robust,
-  out_fixed = out_fixed_r,
-  out_bonf = out_bonf_r,
-  out_fdr = out_fdr_r
-)
-
-# En uç ilk 20 birey:
-head(result_robust[order(result_robust$D2, decreasing = TRUE), ], 20)
+# Sonuç
+out <- data.frame(D2 = D2_robust, pval = pval)
+out <- out[order(out$D2, decreasing = TRUE), ]
+head(out, 20)   # en uç 20 birey
