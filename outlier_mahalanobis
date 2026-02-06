@@ -21,3 +21,25 @@ pval <- pchisq(D2_robust, df = p, lower.tail = FALSE)
 out <- data.frame(D2 = D2_robust, pval = pval)
 out <- out[order(out$D2, decreasing = TRUE), ]
 head(out, 20)   # en uç 20 birey
+
+
+
+#MISSING VARSA:
+X0 <- na.omit(df_numeric)     # satır bazında NA düşürür
+X  <- as.matrix(X0)
+
+fit <- covMcd(X)
+D2  <- mahalanobis(X, fit$center, fit$cov)
+
+
+#YUKARIDAKİLERİ PAKET İLE YAPMAK İÇİN RRCOV
+
+# install.packages("rrcov")
+library(rrcov)
+
+X <- as.matrix(df_numeric)
+
+fit <- CovMcd(X)
+D2  <- mahalanobis(X, fit@center, fit@cov)
+pval <- pchisq(D2, df = ncol(X), lower.tail = FALSE)
+
