@@ -1,0 +1,35 @@
+install.packages("robustbase")  # bir kere
+library(robustbase)
+
+X <- as.matrix(your_data_frame)
+
+p <- ncol(X)
+N <- nrow(X)
+
+fit <- covMcd(X)                 # robust location + covariance (MCD)
+mu_r <- fit$center
+S_r  <- fit$cov
+
+D2_robust <- mahalanobis(X, center = mu_r, cov = S_r)
+
+pval_robust <- pchisq(D2_robust, df = p, lower.tail = FALSE)
+
+# aynı karar kuralları
+alpha <- 0.001
+out_fixed_r <- pval_robust < alpha
+
+alpha_family <- 0.05
+out_bonf_r <- pval_robust < (alpha_family / N)
+
+out_fdr_r <- p.adjust(pval_robust, method = "BH") < 0.05
+
+result_robust <- data.frame(
+  D2 = D2_robust,
+  pval = pval_robust,
+  out_fixed = out_fixed_r,
+  out_bonf = out_bonf_r,
+  out_fdr = out_fdr_r
+)
+
+# En uç ilk 20 birey:
+head(result_robust[order(result_robust$D2, decreasing = TRUE), ], 20)
