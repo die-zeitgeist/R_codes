@@ -1,4 +1,6 @@
 library(psych)
+#import data row names must be selected as use as row names and make it as.matrix
+
 # Thurstone Case V ölçekleme (psych::thurstone)
 tv <- thurstone(P, ranks = FALSE, digits = 6)
 tv
