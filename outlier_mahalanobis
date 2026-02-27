@@ -43,3 +43,64 @@ fit <- CovMcd(X)
 D2  <- mahalanobis(X, fit@center, fit@cov)
 pval <- pchisq(D2, df = ncol(X), lower.tail = FALSE)
 
+Ardından outler olarak seçilebilecek olanları tespit et:
+
+library(rrcov)
+
+X <- as.matrix(df_numeric)
+
+fit <- CovMcd(X)
+
+# robust distances (çoğu sürümde squared distances olarak gelir)
+d2 <- fit@dist      # D^2 (robust)
+cut <- fit@cutoff   # eşik (genelde chi-square tabanlı)
+
+outlier_flag <- d2 > cut
+
+which(outlier_flag)         # outlier satır indeksleri
+sum(outlier_flag)           # kaç outlier
+head(sort(d2, decreasing=TRUE), 20)  # en uçlar
+
+
+
+
+EĞer yukarıdaki çalışmazsa şu da olabilir:
+
+library(rrcov)
+
+X <- as.matrix(df_numeric)
+p <- ncol(X)
+N <- nrow(X)
+
+fit <- CovMcd(X)
+
+# Robust D^2'yi kendimiz hesaplayalım (garanti yol)
+d2 <- mahalanobis(X, center = fit@center, cov = fit@cov)
+
+# p-değeri: P(Chi^2_p >= D^2)
+pval <- pchisq(d2, df = p, lower.tail = FALSE)
+
+# 1) Sabit alpha
+alpha <- 0.001
+flag_fixed <- pval < alpha
+
+# 2) Bonferroni (family-wise)
+alpha_family <- 0.05
+flag_bonf <- pval < (alpha_family / N)
+
+# 3) FDR (BH)
+flag_fdr <- p.adjust(pval, method="BH") < 0.05
+
+# Sonuç tablosu
+res <- data.frame(
+  idx = 1:N,
+  d2 = d2,
+  pval = pval,
+  out_fixed = flag_fixed,
+  out_bonf = flag_bonf,
+  out_fdr = flag_fdr
+)
+
+# Outlier adaylarını gör
+res[order(res$d2, decreasing=TRUE), ][1:30, ]
+
