@@ -1,0 +1,25 @@
+library(semPower)
+ap <- semPower(type = 'a-priori', 
+               effect = .05, effect.measure = 'RMSEA', 
+               alpha = .05, power = .80, df = 50)
+
+
+summary(ap)
+
+
+
+ semPower: A priori power analysis
+                                   
+ F0                        0.125000
+ RMSEA                     0.050000
+ Mc                        0.939413
+                                   
+ df                        50      
+ Required Num Observations 243     
+                                   
+ Critical Chi-Square       67.50480
+ NCP                       30.25000
+ Alpha                     0.050000
+ Beta                      0.199142
+ Power (1 - Beta)          0.800858
+ Implied Alpha/Beta Ratio  0.251077
