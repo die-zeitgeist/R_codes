@@ -1,0 +1,29 @@
+# Gerekli paketler
+if(!require(bootnet)) install.packages("bootnet")
+if(!require(qgraph)) install.packages("qgraph")
+library(bootnet)
+library(qgraph)
+# 1. Sentetik Veri Üretimi
+# 200 kişilik, 5 semptomlu bir yapı (0.3 korelasyon matrisi bazlı)
+set.seed(42)
+n_cases <- 200
+n_vars <- 5
+sigma <- matrix(0.3, n_vars, n_vars)
+diag(sigma) <- 1
+data <- as.data.frame(mvtnorm::rmvnorm(n_cases, sigma = sigma))
+colnames(data) <- c("Uykusuzluk", "Yorgunluk", "Odaklanma", "Kaygı", "İştah")
+
+# 2. Network Tahmini (EBICglasso yöntemi yaygındır)
+# Bu yöntem, parslı (sparse) bir ağ oluşturmak için düşük korelasyonları sıfırlar.
+network_est <- estimateNetwork(data, default = "EBICglasso")
+
+# 3. Görselleştirme
+plot(network_est, 
+     layout = "spring", 
+     labels = colnames(data), 
+     theme = "colorblind",
+     edge.labels = TRUE) # Bağlantı güçlerini (partial correlations) gösterir
+
+# 4. Centrality (Merkezilik) Analizi
+# Hangi semptom ağın kalbinde?
+centralityPlot(network_est)
