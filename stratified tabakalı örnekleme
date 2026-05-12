@@ -1,3 +1,82 @@
+Bunlar daha modern:
+library(dplyr)
+set.seed(26)
+n <- 20
+
+bro <- motiv_factor %>%
+  slice_sample(n = n)
+
+
+
+
+table(motiv_factor$bolum)
+table(tabakali_veri$bolum)
+
+library(sampling)
+library(dplyr)
+
+table(motiv_factor$bolum)
+
+motiv_temiz <- motiv_factor %>%
+  filter(!is.na(bolum)) %>%
+  arrange(bolum)
+toplam_n <- 20
+motiv_temiz <- motiv_factor %>%
+  filter(!is.na(bolum)) %>%
+  arrange(bolum)
+boyutlar <- round(toplam_n * table(motiv_temiz$bolum) / nrow(motiv_temiz))
+orneklem_indexleri <- strata(motiv_temiz, 
+                             stratanames = "bolum", 
+                             size = boyutlar, 
+                             method = "srswor")
+tabakali_veri <- getdata(motiv_temiz, orneklem_indexleri)
+
+
+
+küme örnekleme
+library(dplyr)
+
+set.seed(42)
+motiv_temiz <- motiv_factor %>%
+  filter(!is.na(bolum))
+
+secilen_kumeler <- sample(unique(motiv_temiz$bolum), size = 2)
+
+kume_orneklem <- motiv_temiz %>%
+  filter(bolum %in% secilen_kumeler)
+
+table(kume_orneklem$bolum)
+
+n_kisi_basina <- 10 
+
+kume_orneklem_2_asama <- motiv_factor %>%
+  filter(!is.na(bolum)) %>%
+  filter(bolum %in% sample(unique(bolum), size = 2)) %>%
+  group_by(bolum) %>%
+  slice_sample(n = n_kisi_basina) %>%
+  ungroup()
+
+table(kume_orneklem_2_asama$bolum)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 library(dplyr)
 library(purrr)
 
