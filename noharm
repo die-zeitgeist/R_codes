@@ -1,0 +1,127 @@
+library(sirt)
+library(mvtnorm)
+library(psych)
+
+set.seed(1234)
+N <- 1000
+I <- 20
+
+# --- 1. VERİ SİMÜLASYONU ---
+mu    <- c(0, 0)
+sigma <- matrix(c(1, 0.4, 0.4, 1), nrow = 2)
+theta <- rmvnorm(N, mean = mu, sigma = sigma)
+theta1 <- theta[, 1]
+theta2 <- theta[, 2]
+
+b  <- c(rep(-1.5, 5), rep(1.5, 5), rep(-1.2, 5), rep(1.8, 5))
+a1 <- c(rep(1.2, 10), rep(0.0, 10))
+a2 <- c(rep(0.0, 10), rep(1.1, 10))
+
+data_mat <- matrix(NA, nrow = N, ncol = I)
+colnames(data_mat) <- paste0("Item", 1:I)
+
+for (i in 1:I) {
+  p <- 1 / (1 + exp(-(a1[i] * theta1 + a2[i] * theta2 - b[i])))
+  data_mat[, i] <- rbinom(N, 1, p)
+}
+data_df <- as.data.frame(data_mat)
+
+# --- 2. NOHARM TAHMİNİ ---
+noharm_res <- sirt::noharm.sirt(
+  dat        = data_df,
+  dimensions = 2,          # Doğru argüman adı
+  maxiter    = 500,
+  conv       = 1e-5
+)
+
+# --- 3. DÖNDÜRME (psych paketi ile manuel) ---
+# noharm.sirt'te rotate argümanı yok, psych ile yapıyoruz
+loadings_raw <- noharm_res$F    # Faktör yük matrisi
+
+rot_result <- psych::Promax(loadings_raw)
+
+# --- 4. SONUÇLAR ---
+cat("\n--- UYUM İNDEKSİ (RMSR) ---\n")
+print(round(noharm_res$rmsr, 5))
+
+cat("\n--- FAKTÖR YÜKLERİ (Promax Döndürme Sonrası) ---\n")
+print(round(rot_result$loadings, 3))
+
+cat("\n--- FAKTÖR KORELASYON MATRİSİ ---\n")
+print(round(rot_result$Phi, 3))
+
+cat("\n--- MODEL ÖZETİ ---\n")
+summary(noharm_res)
+
+noharm_res$factor.cor
+
+
+
+#ŞİMDİ DE EFA
+
+library(psych)
+
+fa(data_df, 2, rotate = "promax", fm="pa")
+
+
+library(lavaan)
+
+# --- CFA MODELİ ---
+# EFA ve NOHARM sonuçlarına göre:
+# F1 (PA1): Item1-Item10
+# F2 (PA2): Item11-Item20
+
+model_cfa <- '
+  F1 =~ Item1 + Item2 + Item3 + Item4 + Item5 +
+        Item6 + Item7 + Item8 + Item9 + Item10
+  F2 =~ Item11 + Item12 + Item13 + Item14 + Item15 +
+        Item16 + Item17 + Item18 + Item19 + Item20
+'
+
+# İkili veri için WLSMV tahmincisi
+fit_cfa <- lavaan::cfa(
+  model     = model_cfa,
+  data      = data_df,
+  estimator = "WLSMV",      # İkili veri standardı
+  ordered   = TRUE,         # Tüm değişkenler ordinal/ikili
+  std.lv    = TRUE          # Faktör varyansları = 1 (NOHARM ile karşılaştırılabilir)
+)
+
+summary(fit_cfa, fit.measures = TRUE, standardized = TRUE)
+
+
+
+# --- KARŞILAŞTIRMA TABLOSU ---
+fit_idx <- lavaan::fitMeasures(fit_cfa, 
+                               c("rmsea", "rmsea.ci.lower", "rmsea.ci.upper",
+                                 "srmr", "cfi", "tli", "chi2", "df", "pvalue"))
+
+cat("\n--- LAVAAN CFA UYUM İNDEKSLERİ ---\n")
+print(round(fit_idx, 3))
+
+# Standardize faktör yükleri
+cat("\n--- LAVAAN STANDARDİZE FAKTÖR YÜKLERİ ---\n")
+lavaan::parameterEstimates(fit_cfa, standardized = TRUE) |>
+  subset(op == "=~", select = c(lhs, rhs, std.all)) |>
+  print()
+
+# Faktör korelasyonu
+cat("\n--- FAKTÖR KORELASYONU ---\n")
+lavaan::parameterEstimates(fit_cfa, standardized = TRUE) |>
+  subset(op == "~~" & lhs != rhs) |>
+  print()
+
+#PEKİ EFA'YI TETRACHORİC ile yapsaydık.
+# Önce tetrachoric korelasyon matrisini hesapla
+tet_cor <- psych::tetrachoric(data_df)
+
+# Sonra bu matrisle EFA
+efa_tet <- psych::fa(
+  r        = tet_cor$rho,   # tetrachoric korelasyon matrisi
+  nfactors = 2,
+  rotate   = "promax",
+  fm       = "pa",
+  n.obs    = N              # örneklem büyüklüğünü belirt
+)
+
+print(efa_tet)
