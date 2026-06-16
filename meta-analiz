@@ -1,0 +1,66 @@
+library(meta)
+library(metafor)
+
+#ETKİ BÜYÜKLÜKLERİNİ BULMAK
+es <- escalc(
+  measure = "SMD",
+  m1i  = mean1, sd1i = sd1, n1i = n1,
+  m2i  = mean2, sd2i = sd2, n2i = n2,
+  data = meta_veri)
+
+
+#META_ANALİZ
+model_genel <- rma(yi, vi, data = es, method = "REML")
+
+summary(model_genel)
+
+
+#GRAFİKLEMEK
+forest(  model_genel)
+abline(v = 0, lty = 2, col = "red")
+
+#YAYIN YANLILIĞI
+funnel(model_genel)
+print(regtest(model_genel))  #EGGER testi, simetri anlamlı farklılık gösteriyor mu?
+
+
+#KULLANILAN ÖLÇEK MODERATÖR OLABİLİR Mİ?
+
+model_mod <- rma(yi, vi,
+                 mods = ~ olcek,
+                 data = es,
+                 method = "REML")
+summary(model_mod)
+
+
+model_mod_iv <- rma(yi, vi,
+                 mods = ~ iv_turu,
+                 data = es,
+                 method = "REML")
+summary(model_mod_iv)
+
+write.csv(meta_veri, file = "/Users/Murat/Downloads/meta_veri.csv", row.names = F)
+
+
+
+
+#BİBLİYOMETRİK
+Kim yayınlıyor?        → En üretken yazarlar, kurumlar, ülkeler
+Nerede yayınlanıyor?   → En etkili dergiler
+Ne zaman?              → Yayın trendleri, büyüme eğrisi
+Kimler birlikte?       → İşbirliği ağları (co-authorship)
+Hangi kavramlar?       → Anahtar kelime haritaları
+Kimler birbirini alıntılıyor? → Atıf ağları
+
+
+#VERİYİ ALMAK:
+
+Arama örneği:
+  WoS'ta: TS=("job satisfaction" AND "meta-analysis")
+Scopus'ta: TITLE-ABS-KEY("job satisfaction" AND "meta-analysis")
+
+Web of Science (WoS): Kayıt → arama → "Export" → "Plain Text File" → tüm alanları seç → .txt indir.
+Scopus: Arama → "Export" → "CSV" → tüm alanları seç → .csv indir.
+
+library(bibliometrix)
+biblioshiny()
